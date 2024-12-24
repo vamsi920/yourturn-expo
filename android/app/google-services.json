@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "503968496709",
+    "project_id": "yourturn-2c9c3",
+    "storage_bucket": "yourturn-2c9c3.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:503968496709:android:cb75d60a0a6db11acef72c",
+        "android_client_info": {
+          "package_name": "com.yourturn.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "503968496709-9c1sks7bmlgjk9vcvjt23vpgrv32gpee.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.yourturn.app",
+            "certificate_hash": "016807a23e4cdd6e567bc561f9d1802f7eb3e755"
+          }
+        },
+        {
+          "client_id": "503968496709-9ne3lfneamhoupe2qmhe6krahnknbj3j.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB9eposDENGGRPb6roM8s8lroQJ0k6p9ew"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "503968496709-9ne3lfneamhoupe2qmhe6krahnknbj3j.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "503968496709-7t2j9mdl0ajvsb37ena2gh78av5o8ekt.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.yourturn.app"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
