@@ -1,0 +1,15 @@
+{
+    "id": "string (unique task ID)",
+    "group_id": "string (associated group ID)",
+    "title": "string",
+    "description": "string",
+    "category": "string",
+    "priority": "string (High, Medium, Low)",
+    "due_date": "timestamp",
+    "recurrence": "string (Daily, Weekly, Monthly, None)",
+    "assigned_user_id": "string (user ID)",
+    "created_by": "string (user ID)",
+    "status": "string (Pending, Completed)",
+    "created_at": "timestamp",
+    "updated_at": "timestamp"
+  }

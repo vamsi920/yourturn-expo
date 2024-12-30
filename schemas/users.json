@@ -1,0 +1,8 @@
+{
+    "created_at": "string (ISO timestamp)",
+    "email": "string",
+    "linked_groups": ["string"],
+    "name": "string",
+    "phone_number": "string",
+    "updated_at": "string (ISO timestamp)"
+  }

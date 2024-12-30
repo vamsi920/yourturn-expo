@@ -1,0 +1,16 @@
+{
+    "created_at": "string (ISO timestamp)",
+    "description": "string",
+    "icon": "string (emoji or icon)",
+    "invite_code": "string",
+    "members": [
+      {
+        "email": "string",
+        "name": "string",
+        "role": "string ('admin' or 'member')",
+        "uid": "string"
+      }
+    ],
+    "name": "string",
+    "updated_at": "string (ISO timestamp)"
+  }

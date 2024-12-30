@@ -21,7 +21,7 @@ const Header = ({ style }: { style?: object }) => {
 
     return (
         <View style={[styles.header, style]}>
-            <Text>Header</Text>
+            <Text>YourTurn</Text>
             <TouchableOpacity onPress={handleSignOut} style={styles.logoutButton}>
                 <Icon name="log-out-outline" size={24} color="black" />
             </TouchableOpacity>
@@ -39,7 +39,10 @@ export default function HomeLayout() {
             }}/>
             <View style={styles.content}>
                 <Stack 
-                        screenOptions={{ headerShown: false }}
+                    screenOptions={{ 
+                        headerShown: false,
+                        gestureEnabled: false // Disable swiping to go back
+                    }}
                 />
             </View>
             {/* Shared Footer Navigation */}
@@ -59,8 +62,9 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
+        padding: 10,
     },
     logoutButton: {
-        padding: 10,
+        padding: 0,
     },
 });
