@@ -1,15 +1,33 @@
 {
-    "id": "string (unique task ID)",
-    "group_id": "string (associated group ID)",
-    "title": "string",
-    "description": "string",
-    "category": "string",
-    "priority": "string (High, Medium, Low)",
-    "due_date": "timestamp",
-    "recurrence": "string (Daily, Weekly, Monthly, None)",
-    "assigned_user_id": "string (user ID)",
-    "created_by": "string (user ID)",
-    "status": "string (Pending, Completed)",
-    "created_at": "timestamp",
-    "updated_at": "timestamp"
-  }
+  "id": "string (unique task ID)",
+  "group_id": "string (associated group ID)",
+  "title": "string",
+  "description": "string",
+  "category": "string",
+  "priority": "string (High, Medium, Low)",
+  "due_date": "timestamp (exact date and time)",
+  "recurrence": {
+    "type": "string (Daily, Weekly, Monthly)",
+    "days_of_week": ["string (e.g., Monday, Wednesday)"],
+    "monthly_date": "number (1-31, optional for monthly tasks)",
+    "time_of_day": "string (HH:mm, required for all recurrences)"
+  },
+  "rotation_members": [
+    {
+      "uid": "string (user ID)",
+      "name": "string (user name)"
+    }
+  ],
+  "current_assignee_id": "string (user ID of the current task assignee)",
+  "next_rotation_index": "number (index of the next user in rotation_members array)",
+  "status": "string (Pending, Completed, Skipped)",
+  "completion_history": [
+    {
+      "user_id": "string",
+      "completed_at": "timestamp"
+    }
+  ],
+  "created_by": "string (user ID of task creator)",
+  "created_at": "timestamp (when the task was created)",
+  "updated_at": "timestamp (when the task was last updated)"
+}

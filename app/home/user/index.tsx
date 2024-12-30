@@ -1,60 +1,87 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
-import { getFirestore, doc, getDoc } from 'firebase/firestore';
+import { doc, getDoc, collection, query, where, getDocs } from 'firebase/firestore';
 import { useAuth } from '../../../src/hoooks/useAuth';
 import { db } from '../../../firebase'; // Import your Firestore instance
 
-
 const UserScreen = () => {
-    const { user, loading } = useAuth(); // Ensure `loading` is used
+  const { user, loading } = useAuth(); // Ensure `loading` is used
 
-    const [userDetails, setUserDetails] = useState<any>(null);
-    const [fetchLoading, setFetchLoading] = useState(true);
-  
+  const [userDetails, setUserDetails] = useState<any>(null);
+  const [fetchLoading, setFetchLoading] = useState(true);
+  const [tasksDone, setTasksDone] = useState(0);
+  const [pendingTasks, setPendingTasks] = useState(0);
+  const [totalTasks, setTotalTasks] = useState(0);
 
-    useEffect(() => {
-        const fetchUserDetails = async () => {
-          if (loading) return; // Wait until user state is loaded
-          if (user?.uid) {
-            try {
-                // console.log(user.uid)
-              const userDocRef = doc(db, 'Users', user.uid); // Match UID stored during signup
-              const userDoc = await getDoc(userDocRef);
-    
-              if (userDoc.exists()) {
-                setUserDetails(userDoc.data());
-              } else {
-                console.error('No such user document!');
-              }
-            } catch (error) {
-              console.error('Error fetching user details:', error);
-            } finally {
-              setFetchLoading(false);
-            }
+  useEffect(() => {
+    const fetchUserDetails = async () => {
+      if (loading) return; // Wait until user state is loaded
+      if (user?.uid) {
+        try {
+          const userDocRef = doc(db, 'Users', user.uid); // Match UID stored during signup
+          const userDoc = await getDoc(userDocRef);
+
+          if (userDoc.exists()) {
+            setUserDetails(userDoc.data());
+            await fetchUserTasks(user.uid);
           } else {
-            setFetchLoading(false);
+            console.error('No such user document!');
           }
-        };
-    
-        fetchUserDetails();
-      }, [user, loading]); //
+        } catch (error) {
+          console.error('Error fetching user details:', error);
+        } finally {
+          setFetchLoading(false);
+        }
+      } else {
+        setFetchLoading(false);
+      }
+    };
+    const fetchUserTasks = async (userId: string) => {
+      try {
+      const tasksSnapshot = await getDocs(collection(db, 'Tasks'));
+      let doneCount = 0;
+      let pendingCount = 0;
+      let totalCount = 0;
 
-  
-      if (loading || fetchLoading) {
-        return (
-          <View style={styles.container}>
-            <Text>Loading...</Text>
-          </View>
-        );
+      tasksSnapshot.forEach((doc) => {
+        const task = doc.data();
+        if (task.rotation_members && task.rotation_members.some((member: { uid: string }) => member.uid === userId)) {
+          totalCount++;
+          if (task.status === 'Completed') {
+            doneCount++;
+          } else if (task.status === 'Pending') {
+            pendingCount++;
+          }
+        }
+      });
+
+
+      setTasksDone(doneCount);
+      setPendingTasks(pendingCount);
+      setTotalTasks(totalCount);
+      } catch (error) {
+      console.error('Error fetching user tasks:', error);
       }
-    
-      if (!userDetails) {
-        return (
-          <View style={styles.container}>
-            <Text>No user details available.</Text>
-          </View>
-        );
-      }
+    };
+
+    fetchUserDetails();
+  }, [user, loading]);
+
+  if (loading || fetchLoading) {
+    return (
+      <View style={styles.container}>
+        <Text>Loading...</Text>
+      </View>
+    );
+  }
+
+  if (!userDetails) {
+    return (
+      <View style={styles.container}>
+        <Text>No user details available.</Text>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
@@ -62,34 +89,32 @@ const UserScreen = () => {
       <View style={styles.topSection}>
         <Text style={styles.username}>{userDetails.name || 'N/A'}</Text>
         <Text style={styles.userEmail}>{userDetails.email || 'N/A'}</Text>
-        <Text style={styles.userPhone}>
-          {userDetails.phone_number || 'N/A'}
-        </Text>
+        <Text style={styles.userPhone}>{userDetails.phone_number || 'N/A'}</Text>
         <View style={styles.stats}>
           <View style={styles.statBox}>
-            <Text style={styles.statValue}>10</Text>
+            <Text style={styles.statValue}>{tasksDone}</Text>
             <Text style={styles.statLabel}>Tasks Done</Text>
           </View>
           <View style={styles.statBox}>
-            <Text style={styles.statValue}>2</Text>
+            <Text style={styles.statValue}>{pendingTasks}</Text>
             <Text style={styles.statLabel}>Pending Tasks</Text>
           </View>
           <View style={styles.statBox}>
-            <Text style={styles.statValue}>50</Text>
+            <Text style={styles.statValue}>{totalTasks}</Text>
             <Text style={styles.statLabel}>Total Tasks</Text>
           </View>
         </View>
       </View>
 
       {/* Scrollable Activity Section */}
-    <ScrollView style={styles.activitySection}>
-      <Text style={styles.activityTitle}>Activity</Text>
-      {Array.from({ length: Math.floor(Math.random() * 6) + 15 }).map((_, index) => (
-        <View key={index} style={styles.activityBox}>
-        <Text>Sample Activity {index + 1}</Text>
-        </View>
-      ))}
-    </ScrollView>
+      <ScrollView style={styles.activitySection}>
+        <Text style={styles.activityTitle}>Activity</Text>
+        {Array.from({ length: Math.floor(Math.random() * 6) + 15 }).map((_, index) => (
+          <View key={index} style={styles.activityBox}>
+            <Text>Sample Activity {index + 1}</Text>
+          </View>
+        ))}
+      </ScrollView>
     </View>
   );
 };

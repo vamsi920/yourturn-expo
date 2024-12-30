@@ -190,8 +190,8 @@ const GroupsScreen = () => {
             description,
             invite_code: inviteCode,
             icon: groupIcon,
-            created_at: serverTimestamp(),
-            updated_at: serverTimestamp(),
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString(),
             members: [
                 {
                     uid: user?.uid || '', // Current user's UID
@@ -200,6 +200,7 @@ const GroupsScreen = () => {
                     role: 'admin', // Current user is the admin
                 },
             ],
+            tasks: [],
         };
 
         try {
@@ -218,6 +219,7 @@ const GroupsScreen = () => {
                 const userDocRef = doc(db, 'Users', user.uid);
                 await updateDoc(userDocRef, {
                     linked_groups: arrayUnion(groupRef.id), // Add the new group ID to the linked_groups array
+                    updated_at: new Date().toISOString(),
                 });
             }
 

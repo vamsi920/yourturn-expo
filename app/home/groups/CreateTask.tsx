@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import {
     View,
     StyleSheet,
@@ -7,6 +7,7 @@ import {
     ScrollView,
 } from "react-native";
 import { Input, Button, Text, CheckBox, Divider } from "react-native-elements";
+import { Picker } from '@react-native-picker/picker';
 import {
     doc,
     getDoc,
@@ -19,6 +20,7 @@ import { db } from "../../../firebase";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { auth } from "@/src/lib/firebase";
 import { useAuth } from "../../../src/hoooks/useAuth"; // Ensure you are using the proper auth hook
+import DateTimePicker from '@react-native-community/datetimepicker';
 
 const CreateTask = () => {
     const params = useLocalSearchParams();
@@ -41,6 +43,24 @@ const CreateTask = () => {
         rotation_members: [] as { uid: string; name: string }[],
         recurrenceType: "",
     });
+    const [date, setDate] = useState(new Date());
+    const [mode, setMode] = useState<'time' | 'date'>('time');
+    const [show, setShow] = useState(false);
+
+    const onChange = (event: any, selectedDate: any) => {
+        const currentDate = selectedDate || date;
+        setShow(false);
+        setDate(currentDate);
+        setFormData({
+            ...formData,
+            recurrence: { ...formData.recurrence, time_of_day: currentDate.toLocaleTimeString('en-US', { hour12: false }) },
+        });
+    };
+
+    const showTimepicker = () => {
+        setShow(true);
+        setMode('time');
+    };
 
     const fetchGroupDetails = async () => {
         try {
@@ -243,11 +263,11 @@ const CreateTask = () => {
                 },
                 rotation_members: validRotationMembers, // Use the filtered members
                 current_assignee_id: validRotationMembers[0]?.uid || null,
-                next_rotation_index: 1,
+                next_rotation_index: validRotationMembers.length > 1 ? 1 : 0,
                 status: "Pending",
                 completion_history: [],
                 created_by: user?.uid,
-                created_at: (Timestamp.now()), // Format created_at timestamp
+                created_at: Timestamp.now(), // Format created_at timestamp
                 updated_at: (Timestamp.now()), // Format updated_at timestamp
             };
 
@@ -382,46 +402,63 @@ const CreateTask = () => {
                 </View>
 
                 {formData.recurrenceType === "Daily" && (
-                    <Input
-                        label="Time of Day (HH:mm)"
-                        placeholder="Time of Day"
-                        value={formData.recurrence.time_of_day}
-                        onChangeText={(text) =>
-                            setFormData({
-                                ...formData,
-                                recurrence: { ...formData.recurrence, time_of_day: text },
-                            })
-                        }
-                    />
+                    <>
+                        <View style={{ marginVertical: 10 }}>
+                            <Button 
+                                onPress={showTimepicker} 
+                                title="Select Time" 
+                                buttonStyle={{ borderRadius: 8 }} 
+                            />
+                        </View>
+                        <Text>Selected Time: {formData.recurrence.time_of_day}</Text>
+                        {show && (
+                            <DateTimePicker
+                                testID="dateTimePicker"
+                                value={date}
+                                mode={mode}
+                                is24Hour={true}
+                                display="default"
+                                onChange={onChange}
+                            />
+                        )}
+                    </>
                 )}
 
                 {formData.recurrenceType === "Weekly" && (
                     <>
-                        <Input
-                            label="Days of Week"
-                            placeholder="e.g., Monday, Thursday"
-                            value={formData.recurrence.days_of_week.join(", ")}
-                            onChangeText={(text) =>
+                        <Picker
+                            selectedValue={formData.recurrence.days_of_week[0]}
+                            onValueChange={(itemValue) =>
                                 setFormData({
                                     ...formData,
                                     recurrence: {
                                         ...formData.recurrence,
-                                        days_of_week: text.split(",").map((d) => d.trim()),
+                                        days_of_week: [itemValue],
                                     },
                                 })
                             }
-                        />
-                        <Input
-                            label="Time of Day (HH:mm)"
-                            placeholder="Time of Day"
-                            value={formData.recurrence.time_of_day}
-                            onChangeText={(text) =>
-                                setFormData({
-                                    ...formData,
-                                    recurrence: { ...formData.recurrence, time_of_day: text },
-                                })
-                            }
-                        />
+                            style={styles.picker}
+                        >
+                            <Picker.Item label="Sunday" value="Sunday" color="#000" />
+                            <Picker.Item label="Monday" value="Monday" color="#000" />
+                            <Picker.Item label="Tuesday" value="Tuesday" color="#000" />
+                            <Picker.Item label="Wednesday" value="Wednesday" color="#000" />
+                            <Picker.Item label="Thursday" value="Thursday" color="#000" />
+                            <Picker.Item label="Friday" value="Friday" color="#000" />
+                            <Picker.Item label="Saturday" value="Saturday" color="#000" />
+                        </Picker>
+                        <Button onPress={showTimepicker} title="Select Time" />
+                        <Text>Selected Time: {formData.recurrence.time_of_day}</Text>
+                        {show && (
+                            <DateTimePicker
+                                testID="dateTimePicker"
+                                value={date}
+                                mode={mode}
+                                is24Hour={true}
+                                display="default"
+                                onChange={onChange}
+                            />
+                        )}
                     </>
                 )}
 
@@ -438,17 +475,18 @@ const CreateTask = () => {
                                 })
                             }
                         />
-                        <Input
-                            label="Time of Day (HH:mm)"
-                            placeholder="Time of Day"
-                            value={formData.recurrence.time_of_day}
-                            onChangeText={(text) =>
-                                setFormData({
-                                    ...formData,
-                                    recurrence: { ...formData.recurrence, time_of_day: text },
-                                })
-                            }
-                        />
+                        <Button onPress={showTimepicker} title="Select Time" />
+                        <Text>Selected Time: {formData.recurrence.time_of_day}</Text>
+                        {show && (
+                            <DateTimePicker
+                                testID="dateTimePicker"
+                                value={date}
+                                mode={mode}
+                                is24Hour={true}
+                                display="default"
+                                onChange={onChange}
+                            />
+                        )}
                     </>
                 )}
 
@@ -563,6 +601,11 @@ const styles = StyleSheet.create({
         fontSize: 12, // Smaller input text size
         height: 35, // Further reduced input height
         marginBottom: 8, // Reduced spacing between inputs
+    },
+    picker: {
+        // height: 50,
+        width: '90%',
+        marginLeft: 8,
     },
 });
 export default CreateTask;
