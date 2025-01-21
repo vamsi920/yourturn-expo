@@ -606,6 +606,11 @@ const styles = StyleSheet.create({
         // height: 50,
         width: '90%',
         marginLeft: 8,
+        borderColor: '#A9A9A9',
+        borderWidth: 1,
+        marginBottom: 15,
+        marginTop: 15,
+        borderRadius: 8,
     },
 });
 export default CreateTask;

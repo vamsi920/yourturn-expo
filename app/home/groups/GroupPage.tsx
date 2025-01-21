@@ -173,15 +173,16 @@ const GroupPage = () => {
     }, []);
 
     const filterTasks = (tasks: any[], status: string) => {
+        const filteredTasks = tasks.filter(task => task.status !== "Deleted");
         switch (status) {
             case "Completed":
-                return tasks.filter(task => task.status === "Completed");
+                return filteredTasks.filter(task => task.status === "Completed");
             case "Pending":
-                return tasks.filter(task => task.status === "Pending");
+                return filteredTasks.filter(task => task.status === "Pending");
             case "My Tasks":
-                return tasks.filter(task => task.current_assignee_id === user?.uid);
+                return filteredTasks.filter(task => task.current_assignee_id === user?.uid);
             default:
-                return tasks;
+                return filteredTasks;
         }
     };
 

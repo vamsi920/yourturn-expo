@@ -26,8 +26,6 @@ import {
 import { useAuth } from '../../../src/hoooks/useAuth'; // Ensure you are using the proper auth hook
 import { useRouter } from 'expo-router';
 
-
-
 const emojiIcons = [
     '🍕', '🎸', '🌟', '⚡', '🎮', '🌺', '🦄', '🍩', '🚀', '🐱', '🐶', '🍔', '🍎', '🏀', '⚽', '📚', '🎧', '🎲', '✈️', '🎂',
 ];
@@ -46,8 +44,8 @@ const GroupsScreen = () => {
     const [groups, setGroups] = useState<{ id: string; name: string; members: any[]; icon?: string }[]>([]);
     const [fetchLoading, setFetchLoading] = useState(true);
     const [refreshing, setRefreshing] = useState(false);
+    const [currentUser, setCurrentUser] = useState<any>(null); // State for current user details
     const router = useRouter();
-
 
     const fetchGroups = async () => {
         if (loading) return; // Wait until user state is loaded
@@ -56,6 +54,8 @@ const GroupsScreen = () => {
                 const userDocRef = doc(db, 'Users', user.uid);
                 const userDoc = await getDoc(userDocRef);
                 const userData = userDoc.data();
+                // console.log(userData)
+                setCurrentUser(userData); // Store user details in state
 
                 if (userData?.linked_groups?.length > 0) {
                     const groupIds = userData?.linked_groups || [];
@@ -96,7 +96,6 @@ const GroupsScreen = () => {
         fetchGroups();
     };
 
-
     const renderGroup = ({ item }: { item: any }) => (
         <TouchableOpacity
           style={styles.groupCard}
@@ -104,7 +103,6 @@ const GroupsScreen = () => {
             // console.log('hi'); // Debug message
             router.push(`/home/groups/GroupPage?id=${item.id}`);
           }}
-        // onPress={() => console.log(`Navigating to Group ID: ${item.id}`)}
           activeOpacity={0.7} // Add visual feedback on press
         >
           <View style={[styles.groupIcon, { backgroundColor: generateRandomColor() }]}>
@@ -190,23 +188,22 @@ const GroupsScreen = () => {
             description,
             invite_code: inviteCode,
             icon: groupIcon,
-            created_at: new Date().toISOString(),
-            updated_at: new Date().toISOString(),
+            created_at: serverTimestamp(),
+            updated_at: serverTimestamp(),
             members: [
                 {
                     uid: user?.uid || '', // Current user's UID
-                    name: user?.displayName || 'Unknown', // Current user's name
+                    name: currentUser?.name || 'Unknown', // Current user's name
                     email: user?.email || '', // Current user's email
                     role: 'admin', // Current user is the admin
                 },
             ],
-            tasks: [],
         };
 
         try {
             // Add the group to the Groups collection
             const groupRef = await addDoc(collection(db, 'Groups'), groupDetails);
-            console.log('Group Created with ID:', groupRef.id);
+            // console.log('Group Created with ID:', groupRef.id);
 
             // Add invite code mapping to a separate collection
             await addDoc(collection(db, 'InviteMappings'), {
@@ -219,7 +216,6 @@ const GroupsScreen = () => {
                 const userDocRef = doc(db, 'Users', user.uid);
                 await updateDoc(userDocRef, {
                     linked_groups: arrayUnion(groupRef.id), // Add the new group ID to the linked_groups array
-                    updated_at: new Date().toISOString(),
                 });
             }
 
@@ -259,7 +255,7 @@ const GroupsScreen = () => {
             await updateDoc(groupDocRef, {
                 members: arrayUnion({
                     uid: user?.uid || '',
-                    name: user?.displayName || 'Unknown',
+                    name: currentUser?.name || 'Unknown',
                     email: user?.email || '',
                     role: 'member',
                 }),
@@ -362,8 +358,7 @@ const GroupsScreen = () => {
 )}
 
             {/* Modal for Joining Group */}
-            {/* Modal for Joining Group */}
-{joinModalVisible && (
+            {joinModalVisible && (
   <View style={styles.modalOverlay}>
     <View style={styles.modalContainer}>
       <View style={styles.modalHeader}>
