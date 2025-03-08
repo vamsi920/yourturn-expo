@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import { doc, getDoc, collection, query, where, getDocs } from 'firebase/firestore';
-import { useAuth } from '../../../src/hoooks/useAuth';
-import { db } from '../../../firebase'; // Import your Firestore instance
+import { useAuth } from '../../../../src/hoooks/useAuth';
+import { db } from '../../../../firebase'; // Import your Firestore instance
 
 const UserScreen = () => {
   const { user, loading } = useAuth(); // Ensure `loading` is used

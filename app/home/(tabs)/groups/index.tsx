@@ -10,7 +10,7 @@ import {
     RefreshControl,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { db } from '../../../firebase'; // Adjust the import path based on your structure
+import { db } from '../../../../firebase'; // Adjust the import path based on your structure
 import {
     collection,
     doc,
@@ -23,7 +23,7 @@ import {
     query,
     where,
 } from 'firebase/firestore';
-import { useAuth } from '../../../src/hoooks/useAuth'; // Ensure you are using the proper auth hook
+import { useAuth } from '../../../../src/hoooks/useAuth'; // Ensure you are using the proper auth hook
 import { useRouter } from 'expo-router';
 
 const emojiIcons = [

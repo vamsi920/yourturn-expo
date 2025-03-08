@@ -11,9 +11,9 @@ import {
 } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { doc, getDoc, updateDoc, arrayRemove, collection, query, where, getDocs } from "firebase/firestore";
-import { db } from "../../../firebase";
+import { db } from "../../../../firebase";
 import { Ionicons } from "@expo/vector-icons";
-import { useAuth } from "../../../src/hoooks/useAuth"; // Import the useAuth hook
+import { useAuth } from "../../../../src/hoooks/useAuth"; // Import the useAuth hook
 
 const GroupPage = () => {
     const { user, loading } = useAuth(); // Use the useAuth hook to get the current user

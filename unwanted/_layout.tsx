@@ -2,8 +2,8 @@ import React from 'react';
 import { View, StyleSheet, Text, TouchableOpacity } from 'react-native';
 import { Stack } from 'expo-router';
 import FooterNavigation from './FooterNavigation'; // Import your custom footer navigation component
-import { useAuth } from '../../src/hoooks/useAuth';
-import { auth } from '../../src/lib/firebase';
+import { useAuth } from '../src/hoooks/useAuth';
+import { auth } from '../src/lib/firebase';
 import { useRouter } from 'expo-router';
 import Icon from 'react-native-vector-icons/Ionicons';
 
@@ -32,29 +32,34 @@ const Header = ({ style }: { style?: object }) => {
   );
 };
 
-export default function HomeLayout() {
+export default function RootLayout() {
   const router = useRouter();
 
   return (
-    <View style={styles.container}>
-      {/* Render nested routes */}
-      <Header
-        style={{
-          padding: 10,
-          backgroundColor: 'lightblue',
-        }}
-      />
-      <View style={styles.content}>
-        <Stack
-          screenOptions={({ route }) => ({
+    // <View style={styles.container}>
+    //   {/* Render nested routes */}
+    //   <Header
+    //     style={{
+    //       padding: 10,
+    //       backgroundColor: 'lightblue',
+    //     }}
+    //   />
+    //   <View style={styles.content}>
+    //     <Stack
+    //       screenOptions={({ route }) => ({
+    //         headerShown: false,
+    //         gestureEnabled: !route.path?.startsWith('/auth'), // Disable gestures only for `auth` routes
+    //       })}
+    //     />
+    //   </View>
+    //   {/* Shared Footer Navigation */}
+    //   {/* <FooterNavigation /> */}
+    // </View>
+    <Stack screenOptions={{ headerShown: false }}>
+        <Stack.Screen name="(tabs)" options={{
             headerShown: false,
-            gestureEnabled: !route.path?.startsWith('/auth'), // Disable gestures only for `auth` routes
-          })}
-        />
-      </View>
-      {/* Shared Footer Navigation */}
-      <FooterNavigation />
-    </View>
+        }}  />
+    </Stack>
   );
 }
 

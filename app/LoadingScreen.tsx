@@ -15,7 +15,7 @@ export default function LoadingScreen() {
 
             // Navigate to the next page based on user presence
             if (user) {
-                router.replace('/home');
+                router.replace('/home/(tabs)');
             } else {
                 router.replace('/auth/SignInScreen');
             }

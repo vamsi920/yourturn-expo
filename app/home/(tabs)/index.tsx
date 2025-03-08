@@ -1,8 +1,8 @@
 import React from 'react';
 import { View, Text, Button } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { useAuth } from '../../src/hoooks/useAuth';
-import { auth } from '../../src/lib/firebase';
+import { useAuth } from '../../../src/hoooks/useAuth';
+import { auth } from '../../../src/lib/firebase';
 import { useRouter } from 'expo-router';
 
 const HomeScreen = () => {

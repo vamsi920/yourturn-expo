@@ -16,10 +16,10 @@ import {
     addDoc,
     Timestamp,
 } from "firebase/firestore";
-import { db } from "../../../firebase";
+import { db } from "../../../../firebase";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { auth } from "@/src/lib/firebase";
-import { useAuth } from "../../../src/hoooks/useAuth"; // Ensure you are using the proper auth hook
+import { useAuth } from "../../../../src/hoooks/useAuth"; // Ensure you are using the proper auth hook
 import DateTimePicker from '@react-native-community/datetimepicker';
 
 const CreateTask = () => {
